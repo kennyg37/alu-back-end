@@ -1,10 +1,10 @@
-#!/usr/bin/python3
-import sys
-import requests
+#!/usr/bin/python3s
 """ the imported module of sys will help as take 
 command-line arguments and the request odule will help us
 access the get, post functions
 """
+import sys
+import requests
 
 def get_employee_todo_progress(employee_id):
     """ this function holds the parameter employee_id so that in case

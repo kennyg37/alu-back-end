@@ -1,39 +1,67 @@
 #!/usr/bin/python3
 
-""" 
-The imported module of sys will help us take command-line arguments, and the requests module will help us access the get function.
+"""
+Python script to retrieve TODO list progress for a given employee ID.
+
+This script queries the 'https://jsonplaceholder.typicode.com/todos' API to 
+retrieve the TODO list for an employee specified by an ID. The script outputs 
+the TODO list progress, which includes the employee's name, the total number 
+of tasks, and the number of completed tasks, as well as the titles of the 
+completed tasks.
 """
 
-import sys
 import requests
+import sys
 
-def get_employee_todo_progress(employee_id):
-    """ 
-    This function retrieves the TODO list progress for a given employee ID.
+
+def get_employee_todo_list(employee_id):
     """
-    response = requests.get(f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}')
-    if response.status_code == 200:
-        todos = response.json()
-        finished_tasks = []
+    Retrieves and displays the TODO list progress for a given employee ID.
 
-        for todo in todos:
-            if todo['completed'] == True:
-                finished_tasks.append(todo)
+    Args:
+        employee_id (int): The ID of the employee.
 
-        employee_name = todos[0]['username']
-        all_tasks = len(todos)
-        finished_tasks_count = len(finished_tasks)
+    This function sends a GET request to 'https://jsonplaceholder.typicode.com/todos'
+    with a parameter of 'userId' set to the employee ID. It retrieves the TODO list
+    for the specified employee, and then prints the employee's progress, which includes
+    the number of completed tasks out of the total number of tasks, and the titles of
+    the completed tasks.
+    """
 
-        print(f"Employee {employee_name} is done with tasks ({finished_tasks_count}/{all_tasks}):")
-        for task in finished_tasks:
-            print(f"\t{task['title']}")
+    # Making a GET request to the API endpoint
+    response = requests.get(
+        'https://jsonplaceholder.typicode.com/todos',
+        params={'userId': employee_id}
+    )
 
-    else:
-        print("No TODO list to fetch.")
+    # Checking if the request was successful
+    if response.status_code != 200:
+        print(f"Error: Failed to retrieve TODO list for employee {employee_id}")
+        return
+
+    todos = response.json()
+
+    # Filter completed tasks
+    completed_tasks = [todo for todo in todos if todo['completed']]
+
+    # Displaying progress information
+    employee_name = todos[0]['username']
+    total_tasks = len(todos)
+    completed_tasks_count = len(completed_tasks)
+
+    print(
+        f"Employee {employee_name} is done with tasks({completed_tasks_count}/{total_tasks}):"
+    )
+
+    # Displaying the titles of completed tasks
+    for task in completed_tasks:
+        print(f"\t{task['title']}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python3 todo_progress.py <employee_id>")
         sys.exit(1)
+
     employee_id = int(sys.argv[1])
-    get_employee_todo_progress(employee_id)
+    get_employee_todo_list(employee_id)

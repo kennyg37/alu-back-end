@@ -27,6 +27,7 @@ if __name__ == '__main__':
             done += 1
             itemArr.append(item['title'])
 
-    print("Employee {} is done with ({}/{}) tasks".format(data['name'], done, total))
+    print("Employee {} is done with ({}/{}) tasks"
+            .format(data['name'], done, total))
     for item in itemArr:
         print("\t {}".format(item))
